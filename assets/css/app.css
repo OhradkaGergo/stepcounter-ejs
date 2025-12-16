@@ -1,0 +1,53 @@
+body{
+    background-color: silver;
+}
+
+header{
+    background-color: slategray;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+main{
+    background-color: white;
+    padding: 10px;
+}
+
+footer{
+    background-color: black;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    letter-spacing: 3px;
+    font-size: 80%;
+}
+
+.container{
+    background-color: white;
+    padding: 6px;
+    box-shadow: 0 0 10px black;
+}
+
+.text-justify{
+    text-align: justify;
+}
+
+.text-area {
+    min-height: 200px !important;
+}
+
+em {
+    color: red;
+    font-weight: bold;
+}
+
+#chart {
+    max-height: 600px;
+    max-width: 600px;
+}
+
+.card {
+    padding: 10px;
+    margin-bottom: 10px;
+}
