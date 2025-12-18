@@ -5,16 +5,130 @@ const db = require('./db');
 var moment = require('moment');
 const session = require('express-session');
 
-// lépések oldal betöltése
-router.get('/', (req, res) => {
-    ejs.renderFile('./views/steps/steps.ejs', { session: req.session }, (err, html) => {
+// steps lista
+router.get('/', loginCheck, (req, res) => {
+    db.query(
+        `SELECT * FROM steps WHERE user_id=? ORDER BY date DESC`,
+        [req.session.user.id],
+        (err, results) => {
+            if (err) {
+                console.log(err)
+                req.session.error = 'Adatbázis hiba!'
+                req.session.severity = 'danger'
+                return res.redirect('/steps')
+            }
+
+            ejs.renderFile(
+                './views/steps/steps.ejs',
+                {
+                    session: req.session,
+                    steps: results
+                },
+                (err, html) => {
+                    if (err) {
+                        console.log(err)
+                        return
+                    }
+                    req.session.error = ''
+                    req.session.body = null
+                    res.send(html)
+                }
+            )
+        }
+    )
+})
+
+// új steps űrlap
+router.get('/new', loginCheck, (req, res) => {
+    ejs.renderFile('./views/steps/steps-new.ejs', { session: req.session }, (err, html) => {
         if (err) {
             console.log(err)
-            return;
+            return
         }
-
+        req.session.error = ''
+        req.session.body = null
         res.send(html)
     })
 })
+
+// új steps
+router.post('/new', loginCheck, (req, res) => {
+    let { steps, date } = req.body
+    const today = new Date().toISOString().split('T')[0]
+
+    req.session.body = req.body
+
+    if (steps == '' || date == '') {
+        req.session.error = 'Nem adtál meg minden kötelező adatot'
+        req.session.severity = 'danger'
+        return res.redirect('/steps/new')
+    }
+
+    if (parseInt(steps) <= 0) {
+        req.session.error = 'A lépések száma pozitív kell legyen'
+        req.session.severity = 'danger'
+        return res.redirect('/steps/new')
+    }
+
+    if (date > today) {
+        req.session.error = 'Nem vehetsz fel lépést jövőbeli dátumra'
+        req.session.severity = 'danger'
+        return res.redirect('/steps/new')
+    }
+
+    db.query(
+        `SELECT id FROM steps WHERE user_id=? AND date=?`,
+        [req.session.user.id, date],
+        (err, results) => {
+            if (err) {
+                console.log(err)
+                req.session.error = 'Adatbázis hiba!'
+                req.session.severity = 'danger'
+                return res.redirect('/steps/new')
+            }
+
+            if (results.length > 0) {
+                req.session.error = 'Erre a dátumra már rögzítettél lépéseket'
+                req.session.severity = 'warning'
+                return res.redirect('/steps/new')
+            }
+
+            db.query(
+                `INSERT INTO steps (user_id, date, steps)
+                 VALUES (?, ?, ?)`,
+                [req.session.user.id, date, steps],
+                (err, results) => {
+                    if (err) {
+                        console.log(err)
+                        req.session.error = 'Adatbázis hiba!'
+                        req.session.severity = 'danger'
+                        return res.redirect('/steps')
+                    }
+
+                    req.session.error = 'Lépések sikeresen rögzítve!'
+                    req.session.severity = 'success'
+                    return res.redirect('/steps')
+                }
+            )
+        }
+    )
+})
+
+// frissít steps űrlap
+
+// frissít steps
+
+// töröl steps űrlap
+
+// töröl steps
+
+
+// login check
+function loginCheck(req, res, next){
+    if (req.session.user){
+        return next()
+    }
+    return res.redirect('/users/login')
+}
 
 module.exports = router;

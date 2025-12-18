@@ -1,0 +1,36 @@
+<%- include('../system/header') %>
+
+<div class="container mb-3">
+    <h3>Stepcounter</h3>
+    <h5>Lépés módosítása</h5>
+
+    <%- include('../system/message') %>
+
+    <form action="/steps/edit/<%= steps.id %>" method="POST">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="title" name="title" placeholder="" value="<%= session.body ? session.body.title : task.title %>">
+            <label for="title">Feladat megnevezése <em>*</em></label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <textarea class="form-control text-area" placeholder="" id="description" name="description" value="<%= session.body ? session.body.description : task.description %>"></textarea>
+            <label for="description">Leírás</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="date" class="form-control" id="start" name="start" placeholder="" value="<%= session.body ? session.body.start : task.title.start %>">
+            <label for="start">Feladat kezdete <em>*</em></label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="date" class="form-control" id="end" name="end" placeholder="" value="<%= session.body ? session.body.end : task.end %>">
+            <label for="end">Feladat vége <em>*</em></label>
+        </div>
+
+        <input type="submit" value="Módosít" name="update" class="btn btn-primary mb-3">
+    </form>
+
+    <a href="/steps" class="btn btn-secondary me-1">Vissza</a>
+</div>
+
+<%- include('../system/footer') %>

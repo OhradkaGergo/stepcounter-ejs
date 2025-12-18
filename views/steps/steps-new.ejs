@@ -1,0 +1,26 @@
+<%- include('../system/header') %>
+
+<div class="container mb-3">
+    <h3>Stepcounter</h3>
+    <h5>Új lépés rögzítése</h5>
+
+    <%- include('../system/message') %>
+
+    <form action="/steps/new" method="POST">
+        <div class="form-floating mb-3">
+            <input type="number" name="steps" id="steps" class="form-control" min="1" required>
+            <label for="steps">Lépések száma</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="date" name="date" id="date" class="form-control" required>
+            <label for="date">Dátum</label>
+        </div>
+
+        <input type="submit" value="Felvesz" class="btn btn-dark mb-3">
+    </form>
+
+    <a href="/steps" class="btn btn-dark me-1">Vissza</a>
+</div>
+
+<%- include('../system/footer') %>

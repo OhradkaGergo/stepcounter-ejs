@@ -1,8 +1,44 @@
 <%- include('../system/header') %>
 
 <div class="container">
-    <h3>steps</h3>
-    <p>steps oldal</p>
+    <h3>Stepcounter</h3>
+    <h5>Lépések</h5>
+    <a href="/steps/new" class="btn btn-dark mb-3">Új lépés felvétele</a>
+
+    <% if (steps.length === 0) { %>
+        <div>Jelenleg nincsenek rögzített lépések.</div>
+    <% } else { %>
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Dátum</th>
+                    <th>Lépések</th>
+                    <th class="text-end">Műveletek</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% steps.forEach((item, index) => { %>
+                    <tr>
+                        <td><%= index + 1 %>.</td>
+                        <td><%= item.date %></td>
+                        <td><%= item.steps %></td>
+                        <td class="text-end">
+                            <a href="/steps/edit/<%= item.id %>" class="btn btn-warning btn-sm me-1">Szerkesztés</a>
+                            <a href="/steps/delete/<%= item.id %>" class="btn btn-danger btn-sm">Törlés</a>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">
+                        Összesen <strong><%= steps.length %></strong> nap
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    <% } %>
 </div>
 
 <%- include('../system/footer') %>
