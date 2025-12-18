@@ -1,0 +1,23 @@
+<%- include('../system/header') %>
+
+<div class="container">
+    <h3 class="my-3">Belépés</h3>
+
+    <%- include('../system/message') %>
+
+    <form action="/users/login" method="POST">
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="email" name="email" placeholder="" value="<%= session.body ? session.body.email : '' %>">
+            <label for="email">E-mail</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="password" name="password" placeholder="" value="<%= session.body ? session.body.password : '' %>">
+            <label for="password">Jelszó</label>
+        </div>
+
+        <input type="submit" value="Belépés" name="login" class="btn btn-primary mb-3">
+    </form>
+</div>
+
+<%- include('../system/footer') %>
