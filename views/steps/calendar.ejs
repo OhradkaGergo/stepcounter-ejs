@@ -1,0 +1,30 @@
+<%- include('../system/header') %>
+
+<div class="container mb-4">
+    <h3>Naptár</h3>
+
+    <div id="calendar"></div>
+
+    <a href="/steps" class="btn btn-dark mt-3">Vissza</a>
+</div>
+
+<script>
+    var events = <%- JSON.stringify(calEvents) %>
+
+    var calendarEl = document.getElementById('calendar')
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'hu',
+        headerToolbar: {
+            left: 'prev,today,next',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        },
+        events: events
+    })
+
+    calendar.render()
+</script>
+
+<%- include('../system/footer') %>

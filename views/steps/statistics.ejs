@@ -1,0 +1,59 @@
+<%- include('../system/header') %>
+
+<div class="container mb-4">
+    <h3>Statisztika</h3>
+    <h5>Napi lépésszám alakulása</h5>
+
+    <% if (data.length === 0) { %>
+        <div>Még nincs elég adat a statisztikához.</div>
+    <% } else { %>
+        <canvas id="stepsChart" height="120"></canvas>
+    <% } %>
+
+    <a href="/steps" class="btn btn-dark mt-3">Vissza</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    <% if (data.length > 0) { %>
+        const labels = <%- JSON.stringify(data.map(item => item.date)) %>
+        const values = <%- JSON.stringify(data.map(item => item.steps)) %>
+
+        const ctx = document.getElementById('stepsChart').getContext('2d')
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Napi lépésszám',
+                    data: values,
+                    fill: false,
+                    tension: 0.2,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Lépések száma'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Dátum'
+                        }
+                    }
+                }
+            }
+        })
+    <% } %>
+</script>
+
+<%- include('../system/footer') %>

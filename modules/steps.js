@@ -250,8 +250,6 @@ router.get('/delete/:id', loginCheck, (req, res) => {
             }
 
             const step = results[0]
-
-            // dátum formázás a date inputhoz (timezone-safe)
             const d = step.date
             step.date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
 
@@ -296,6 +294,100 @@ router.post('/delete/:id', loginCheck, (req, res) => {
         }
     )
 })
+
+
+
+// statistics
+router.get('/statistics', loginCheck, (req, res) => {
+    db.query(
+        `SELECT date, steps
+         FROM steps
+         WHERE user_id=?
+         ORDER BY date ASC`,
+        [req.session.user.id],
+        (err, results) => {
+            if (err) {
+                console.log(err)
+                req.session.error = 'Adatbázis hiba!'
+                req.session.severity = 'danger'
+                return res.redirect('/steps')
+            }
+
+            const data = results.map(item => {
+                const d = item.date
+                return {
+                    date: `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,
+                    steps: item.steps
+                }
+            })
+
+            ejs.renderFile(
+                './views/steps/statistics.ejs',
+                {
+                    session: req.session,
+                    data
+                },
+                (err, html) => {
+                    if (err) {
+                        console.log(err)
+                        return
+                    }
+                    res.send(html)
+                }
+            )
+        }
+    )
+})
+
+// calendar
+router.get('/calendar', loginCheck, (req, res) => {
+    let calEvents = []
+
+    db.query(
+        `SELECT date, steps
+         FROM steps
+         WHERE user_id=?
+         ORDER BY date ASC`,
+        [req.session.user.id],
+        (err, results) => {
+            if (err) {
+                console.log(err)
+                req.session.error = 'Adatbázis hiba!'
+                req.session.severity = 'danger'
+                return res.redirect('/steps')
+            }
+
+            results.forEach(item => {
+                const d = item.date
+                const date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+
+                calEvents.push({
+                    title: `${item.steps} lépés`,
+                    start: date
+                })
+            })
+
+            ejs.renderFile(
+                './views/steps/calendar.ejs',
+                {
+                    session: req.session,
+                    calEvents
+                },
+                (err, html) => {
+                    if (err) {
+                        console.log(err)
+                        return
+                    }
+                    req.session.error = ''
+                    req.session.body = null
+                    res.send(html)
+                }
+            )
+        }
+    )
+})
+
+
 
 // login check
 function loginCheck(req, res, next){

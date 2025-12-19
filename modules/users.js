@@ -36,43 +36,43 @@ router.post('/registration', (req, res) => {
     let { name, email, password, confirm } = req.body
 
     if (name == '' || email == '' || password == '' || confirm == '') {
-        req.session.error = 'nem adtál meg minden adatot'
+        req.session.error = 'Nem adtál meg minden adatot'
         req.session.severity = 'danger'
         return res.redirect('/users/registration')
     }
 
     if (password != confirm) {
-        req.session.error = 'nem egyeznek a jelszavak'
+        req.session.error = 'Nem egyeznek a jelszavak'
         req.session.severity = 'danger'
         return res.redirect('/users/registration')
     }
 
     if (!password.match(passwdRegExp)) {
-        req.session.error = 'nem elég biztonságos a jelszó'
+        req.session.error = 'Nem elég biztonságos a jelszó'
         req.session.severity = 'danger'
         return res.redirect('/users/registration')
     }
 
     db.query(`SELECT * FROM users WHERE email=?`, [email], (err, results) => {
         if (err) {
-            req.session.error = 'adatbázis hiba'
+            req.session.error = 'Adatbázis hiba'
             req.session.severity = 'danger'
             return res.redirect('/users/registration')
         }
 
         if (results.length != 0) {
-            req.session.error = 'van már ilyen email címmel regisztrált felhasználó'
+            req.session.error = 'Van már ilyen email címmel regisztrált felhasználó'
             req.session.severity = 'danger'
             return res.redirect('/users/registration')
         }
 
         db.query(`INSERT INTO users (name, email, password) VALUES (?, ?, SHA1(?))`, [name, email, password], (err, results) => {
             if (err) {
-                req.session.error = 'adatbázis hiba'
+                req.session.error = 'Adatbázis hiba'
                 req.session.severity = 'danger'
                 return res.redirect('/users/registration')
             }
-            req.session.error = 'sikeres regisztráció'
+            req.session.error = 'Sikeres regisztráció'
             req.session.severity = 'success'
             return res.redirect('/users/login')
         })
@@ -84,20 +84,20 @@ router.post('/login', (req, res) => {
     let { email, password } = req.body
 
     if (email == '' || password == '') {
-        req.session.error = 'nem adtál meg minden adatot'
+        req.session.error = 'Nem adtál meg minden adatot'
         req.session.severity = 'danger'
         return res.redirect('/users/login')
     }
 
     db.query(`SELECT * FROM users WHERE email=? AND password=SHA1(?)`, [email, password], (err, results) => {
         if (err) {
-            req.session.error = 'adatbázis hiba'
+            req.session.error = 'Adatbázis hiba'
             req.session.severity = 'danger'
             return res.redirect('/users/login')
         }
 
         if (results.length == 0) {
-            req.session.error = 'hibás belépési adatok'
+            req.session.error = 'Hibás belépési adatok'
             req.session.severity = 'danger'
             return res.redirect('/users/login')
         }
