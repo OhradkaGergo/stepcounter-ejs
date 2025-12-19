@@ -1,18 +1,129 @@
-header{
-    background-color: black;
-    color: white;
-    text-align: center;
-    padding: 20px;
+html, body {
+    height: 100%;
+    margin: 0;
 }
 
-footer{
-    background-color: black;
-    color: white;
-    text-align: center;
-    letter-spacing: 3px;
-    padding: 20px;
+body {
+    background-color: #F1F2F6;
+    color: #27187E;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.text-justify{
-    text-align: justify;
+.app-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-content {
+    flex: 1;
+    padding-bottom: 30px;
+}
+
+.app-header {
+    background-color: #27187E;
+    color: #FFFFFF;
+    text-align: center;
+    padding: 24px 0;
+}
+
+.app-header h1 {
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+.navbar {
+    background-color: #FFFFFF !important;
+    border-bottom: 1px solid #AEB8FE;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    color: #27187E !important;
+}
+
+.nav-link {
+    color: #27187E !important;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: #FF8600 !important;
+}
+
+.navbar-toggler {
+    border-color: #27187E;
+}
+
+.container {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(39, 24, 126, 0.08);
+}
+
+h3 {
+    color: #27187E;
+    font-weight: 600;
+}
+
+h5 {
+    color: #758BFD;
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+
+hr {
+    border-top: 1px solid #27187E;
+}
+
+.btn-dark {
+    background-color: #27187E;
+    border-color: #27187E;
+}
+
+.btn-dark:hover {
+    background-color: #758BFD;
+    border-color: #758BFD;
+}
+
+.btn-warning {
+    background-color: #FF8600;
+    border-color: #FF8600;
+    color: #FFFFFF;
+}
+
+.btn-danger {
+    background-color: #d9534f;
+}
+
+.app-footer {
+    background-color: #27187E;
+    color: #FFFFFF;
+    text-align: center;
+    padding: 16px 0;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+}
+
+.table thead {
+    background-color: #AEB8FE;
+    color: #27187E;
+}
+
+.table tbody tr:hover {
+    background-color: #F1F2F6;
+}
+
+.alert-success {
+    background-color: #AEB8FE;
+    color: #27187E;
+    border: none;
+}
+
+.alert-danger {
+    background-color: #FF8600;
+    color: #FFFFFF;
+    border: none;
 }
