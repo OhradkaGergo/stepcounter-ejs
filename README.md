@@ -1,0 +1,1 @@
+# Stepcounter EJS applikáció
