@@ -9,36 +9,36 @@
             <ul class="navbar-nav">
                 <!-- always --> 
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Főoldal</a>
+                    <a class="nav-link" href="/"><i class="bi bi-house-fill"></i>&nbsp;Főoldal</a>
                 </li>
 
                 <!-- if logged out -->
                 <% if (!session.user) { %>
                     <li class="nav-item">
-                        <a class="nav-link" href="/users/login">Belépés</a>
+                        <a class="nav-link" href="/users/login"><i class="bi bi-box-arrow-in-right"></i>&nbsp;Belépés</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="/users/registration">Regisztráció</a>
+                        <a class="nav-link" href="/users/registration"><i class="bi bi-person-plus-fill"></i>&nbsp;Regisztráció</a>
                     </li>
                 <% } %>
 
                 <!-- if logged in -->
                 <% if (session.user) { %>
                     <li class="nav-item">
-                        <a class="nav-link" href="/steps">Lépések</a>
+                        <a class="nav-link" href="/steps"><i class="bi bi-person-walking"></i>&nbsp;Lépések</a>
                     </li>
                     
                     <li class="nav-item">
-                        <a class="nav-link" href="/steps/calendar">Naptár</a>
+                        <a class="nav-link" href="/steps/calendar"><i class="bi bi-calendar-check-fill"></i>&nbsp;Naptár</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="/steps/statistics">Statisztika</a>
+                        <a class="nav-link" href="/steps/statistics"><i class="bi bi-bar-chart-fill"></i>&nbsp;Statisztika</a>
                     </li>
                     
                     <li class="nav-item">
-                        <a class="nav-link" href="/users/logout">Kilépés</a>
+                        <a class="nav-link" href="/users/logout"><i class="bi bi-door-open-fill"></i>&nbsp;Kilépés</a>
                     </li>
                 <% } %>
             </ul>
