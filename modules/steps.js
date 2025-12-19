@@ -115,8 +115,109 @@ router.post('/new', loginCheck, (req, res) => {
 })
 
 // frissít steps űrlap
+router.get('/edit/:id', loginCheck, (req, res) => {
+    const id = req.params.id
+
+    db.query(
+        `SELECT * FROM steps WHERE id=? AND user_id=?`,
+        [id, req.session.user.id],
+        (err, results) => {
+            if (err) {
+                console.log(err)
+                req.session.error = 'Adatbázis hiba!'
+                req.session.severity = 'danger'
+                return res.redirect('/steps')
+            }
+
+            if (results.length === 0) {
+                req.session.error = 'Nincs jogosultságod ehhez a lépéshez'
+                req.session.severity = 'danger'
+                return res.redirect('/steps')
+            }
+
+            ejs.renderFile(
+                './views/steps/steps-edit.ejs',
+                {
+                    session: req.session,
+                    step: results[0]
+                },
+                (err, html) => {
+                    if (err) {
+                        console.log(err)
+                        return
+                    }
+                    req.session.error = ''
+                    req.session.body = null
+                    res.send(html)
+                }
+            )
+        }
+    )
+})
 
 // frissít steps
+router.post('/edit/:id', loginCheck, (req, res) => {
+    const { steps, date } = req.body
+    const id = req.params.id
+    const today = new Date().toISOString().split('T')[0]
+
+    if (steps === '' || date === '') {
+        req.session.error = 'Nem adtál meg minden kötelező adatot'
+        req.session.severity = 'danger'
+        return res.redirect('/steps/edit/' + id)
+    }
+
+    if (parseInt(steps) <= 0) {
+        req.session.error = 'A lépések száma pozitív kell legyen'
+        req.session.severity = 'danger'
+        return res.redirect('/steps/edit/' + id)
+    }
+
+    if (date > today) {
+        req.session.error = 'Nem vehetsz fel lépést jövőbeli dátumra'
+        req.session.severity = 'danger'
+        return res.redirect('/steps/edit/' + id)
+    }
+
+    db.query(
+        `SELECT id FROM steps
+         WHERE user_id=? AND date=? AND id!=?`,
+        [req.session.user.id, date, id],
+        (err, results) => {
+            if (err) {
+                console.log(err)
+                req.session.error = 'Adatbázis hiba!'
+                req.session.severity = 'danger'
+                return res.redirect('/steps')
+            }
+
+            if (results.length > 0) {
+                req.session.error = 'Erre a dátumra már létezik másik bejegyzés'
+                req.session.severity = 'warning'
+                return res.redirect('/steps/edit/' + id)
+            }
+
+            db.query(
+                `UPDATE steps
+                 SET steps=?, date=?
+                 WHERE id=? AND user_id=?`,
+                [steps, date, id, req.session.user.id],
+                (err, results) => {
+                    if (err) {
+                        console.log(err)
+                        req.session.error = 'Adatbázis hiba!'
+                        req.session.severity = 'danger'
+                        return res.redirect('/steps')
+                    }
+
+                    req.session.error = 'Lépés sikeresen módosítva!'
+                    req.session.severity = 'success'
+                    return res.redirect('/steps')
+                }
+            )
+        }
+    )
+})
 
 // töröl steps űrlap
 
