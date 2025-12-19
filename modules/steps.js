@@ -18,6 +18,11 @@ router.get('/', loginCheck, (req, res) => {
                 return res.redirect('/steps')
             }
 
+            results.forEach(item => {
+                const d = new Date(item.date)
+                item.date = `${d.getFullYear()}.${d.getMonth()+1}.${d.getDate()}`
+            })
+
             ejs.renderFile(
                 './views/steps/steps.ejs',
                 {
@@ -135,6 +140,10 @@ router.get('/edit/:id', loginCheck, (req, res) => {
                 return res.redirect('/steps')
             }
 
+            const step = results[0]
+            const d = step.date
+            step.date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+
             ejs.renderFile(
                 './views/steps/steps-edit.ejs',
                 {
@@ -220,9 +229,73 @@ router.post('/edit/:id', loginCheck, (req, res) => {
 })
 
 // töröl steps űrlap
+router.get('/delete/:id', loginCheck, (req, res) => {
+    const id = req.params.id
+
+    db.query(
+        `SELECT * FROM steps WHERE id=? AND user_id=?`,
+        [id, req.session.user.id],
+        (err, results) => {
+            if (err) {
+                console.log(err)
+                req.session.error = 'Adatbázis hiba!'
+                req.session.severity = 'danger'
+                return res.redirect('/steps')
+            }
+
+            if (results.length === 0) {
+                req.session.error = 'Nincs jogosultságod ehhez a lépéshez'
+                req.session.severity = 'danger'
+                return res.redirect('/steps')
+            }
+
+            const step = results[0]
+
+            // dátum formázás a date inputhoz (timezone-safe)
+            const d = step.date
+            step.date = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+
+            ejs.renderFile(
+                './views/steps/steps-delete.ejs',
+                {
+                    session: req.session,
+                    step
+                },
+                (err, html) => {
+                    if (err) {
+                        console.log(err)
+                        return
+                    }
+                    req.session.error = ''
+                    req.session.body = null
+                    res.send(html)
+                }
+            )
+        }
+    )
+})
 
 // töröl steps
+router.post('/delete/:id', loginCheck, (req, res) => {
+    const id = req.params.id
 
+    db.query(
+        `DELETE FROM steps WHERE id=? AND user_id=?`,
+        [id, req.session.user.id],
+        (err, results) => {
+            if (err) {
+                console.log(err)
+                req.session.error = 'Adatbázis hiba!'
+                req.session.severity = 'danger'
+                return res.redirect('/steps')
+            }
+
+            req.session.error = 'Lépés sikeresen törölve!'
+            req.session.severity = 'success'
+            return res.redirect('/steps')
+        }
+    )
+})
 
 // login check
 function loginCheck(req, res, next){
